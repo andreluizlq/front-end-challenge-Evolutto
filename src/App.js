@@ -1,24 +1,67 @@
-import logo from './logo.svg';
-import './App.css';
+import {
+  Container,
+  Stack,
+  Tabs,
+  Tab,
+  Box,
+  Typography,
+  Button,
+} from "@mui/material";
+import { useState } from "react";
+import Page from "./components/Page";
+import TableTabs from "./components/TableTabs";
 
 function App() {
+  const [currentTab, setCurrentTab] = useState("Contatos ativos");
+
+  const handleChangeTab = (event, newValue) => {
+    setCurrentTab(newValue);
+  };
+
+  const ACCOUNT_TABS = [
+    {
+      value: "Contatos ativos",
+      component: <TableTabs />,
+    },
+    {
+      value: "Contatos excluídos",
+      component: <TableTabs />,
+    },
+  ];
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Page>
+      <Container>
+        <Stack spacing={5}>
+          <Tabs
+            value={currentTab}
+            scrollButtons="auto"
+            variant="scrollable"
+            allowScrollButtonsMobile
+            onChange={handleChangeTab}
+          >
+            {ACCOUNT_TABS.map((tab) => (
+              <Tab
+                disableRipple
+                key={tab.value}
+                label={tab.value}
+                value={tab.value}
+              />
+            ))}
+          </Tabs>
+          <Stack flexDirection="row" justifyContent="space-between">
+            <Typography color="#B5B5C3" fontWeight={500} lineHeight="1.313rem">
+              More than 400+ new members
+            </Typography>
+            <Button>Novo Contato</Button>
+          </Stack>
+          {ACCOUNT_TABS.map((tab) => {
+            const isMatched = tab.value === currentTab;
+            return isMatched && <Box key={tab.value}>{tab.component}</Box>;
+          })}
+        </Stack>
+      </Container>
+    </Page>
   );
 }
 
