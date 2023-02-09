@@ -11,11 +11,18 @@ import {
   Stack,
   Button,
 } from "@mui/material";
-import mockApi from "../utils/mockApi";
+import { useDispatch } from "react-redux";
+import {
+  handleDisabledClient,
+  handleEnableClient,
+} from "../redux/slices/clientDataSlice";
+import ClientDialog from "./ClientDialog";
 
-const TableTabs = () => {
+const TableTabs = ({ clientList, active = false }) => {
   const [page, setPage] = useState(1);
   const pageLimit = 10;
+  const dispatch = useDispatch();
+  const [openDialog, setOpenDialog] = useState(false);
 
   return (
     <Stack alignItems="center" spacing={3}>
@@ -29,28 +36,55 @@ const TableTabs = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {mockApi
+            {clientList
               ?.slice((page - 1) * pageLimit, page * pageLimit)
-              .map((item) => (
-                <TableRow>
-                  <TableCell component="th" scope="row">
-                    {item.name}
-                  </TableCell>
-                  <TableCell>{item.email}</TableCell>
-                  <TableCell>
-                    <Stack flexDirection="row" justifyContent="space-between">
-                      <Button>Editar</Button>
-                      <Button>Excluir</Button>
-                    </Stack>
-                  </TableCell>
-                </TableRow>
+              .map((item, index) => (
+                <>
+                  <TableRow key={index}>
+                    <TableCell component="th" scope="row">
+                      {item.name}
+                    </TableCell>
+                    <TableCell>{item.email}</TableCell>
+                    <TableCell>
+                      <Stack flexDirection="row" justifyContent="space-between">
+                        {active && (
+                          <Button onClick={() => setOpenDialog(true)}>
+                            Editar
+                          </Button>
+                        )}
+                        {active && (
+                          <Button
+                            onClick={() =>
+                              dispatch(handleDisabledClient(index))
+                            }
+                          >
+                            Excluir
+                          </Button>
+                        )}
+                        {!active && (
+                          <Button
+                            onClick={() => dispatch(handleEnableClient(index))}
+                          >
+                            Restaurar
+                          </Button>
+                        )}
+                      </Stack>
+                    </TableCell>
+                  </TableRow>
+                  <ClientDialog
+                    openDialog={openDialog}
+                    setOpenDialog={setOpenDialog}
+                    client={item}
+                    index={index}
+                  />
+                </>
               ))}
           </TableBody>
         </Table>
       </TableContainer>
       <Pagination
         sx={{ mb: "1rem" }}
-        count={Math.ceil(mockApi.length / pageLimit)}
+        count={Math.ceil(clientList.length / pageLimit)}
         onChange={(_, value) => setPage(value)}
         page={page}
         size="small"

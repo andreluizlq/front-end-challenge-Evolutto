@@ -1,4 +1,4 @@
-import { Stack, Box } from "@mui/material";
+import { Stack, Box, Container } from "@mui/material";
 
 const Page = ({ children }) => {
   return (
@@ -12,7 +12,9 @@ const Page = ({ children }) => {
       <Stack alignItems="start" p="1rem">
         <Box component="img" alt="LOGO" src="images/logo.png" width="16rem" />
       </Stack>
-      <Box pt="6rem">{children}</Box>
+      <Container>
+        <Box pt="6rem">{children}</Box>
+      </Container>
     </Stack>
   );
 };
