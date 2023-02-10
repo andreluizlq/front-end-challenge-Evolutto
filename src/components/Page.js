@@ -4,7 +4,6 @@ const Page = ({ children }) => {
   return (
     <Stack
       sx={{
-        backgroundColor: "#f1f1f1",
         width: "100vw",
         height: "100vh",
       }}

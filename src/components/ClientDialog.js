@@ -1,14 +1,13 @@
 import { useMemo } from "react";
 import {
   Stack,
-  Typography,
   Button,
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions,
   TextField,
   MenuItem,
+  Divider,
 } from "@mui/material";
 import {
   handlePostClient,
@@ -75,12 +74,18 @@ const ClientDialog = ({ openDialog, setOpenDialog, index, client }) => {
   const database = [{ name: "Masculino" }, { name: "Feminino" }];
 
   return (
-    <Dialog open={openDialog} onClose={() => handleDialog(false)}>
-      <DialogTitle>Editar contato</DialogTitle>
+    <Dialog
+      open={openDialog}
+      onClose={() => handleDialog(false)}
+      maxWidth="xs"
+      fullWidth
+      sx={{ borderRadius: "16px" }}
+    >
+      <DialogTitle sx={{ fontWeight: 600 }}>Editar contato</DialogTitle>
       <DialogContent>
+        <Divider />
         <Stack>
-          <Stack spacing={1}>
-            <Typography>name</Typography>
+          <Stack mt="2rem">
             <Controller
               name="name"
               control={control}
@@ -88,17 +93,16 @@ const ClientDialog = ({ openDialog, setOpenDialog, index, client }) => {
                 <TextField
                   {...field}
                   fullWidth
-                  required
+                  label="Nome"
                   size="small"
                   error={Boolean(error)}
                   helperText={error?.message}
-                  inputProps={{ maxLength: 1000 }}
+                  inputProps={{ maxLength: 30 }}
                 />
               )}
             />
           </Stack>
-          <Stack spacing={1}>
-            <Typography>Email</Typography>
+          <Stack mt="1.6rem">
             <Controller
               name="email"
               control={control}
@@ -106,17 +110,16 @@ const ClientDialog = ({ openDialog, setOpenDialog, index, client }) => {
                 <TextField
                   {...field}
                   fullWidth
-                  required
+                  label="EmailExemplo@email.com"
                   size="small"
                   error={Boolean(error)}
                   helperText={error?.message}
-                  inputProps={{ maxLength: 1000 }}
+                  inputProps={{ maxLength: 30 }}
                 />
               )}
             />
           </Stack>
-          <Stack spacing={1}>
-            <Typography>Sexo</Typography>
+          <Stack mt="1.6rem" mb="2rem">
             <Controller
               name="type"
               control={control}
@@ -124,7 +127,7 @@ const ClientDialog = ({ openDialog, setOpenDialog, index, client }) => {
                 <TextField
                   {...field}
                   select
-                  required
+                  label="Sexo"
                   fullWidth
                   size="small"
                   error={Boolean(error)}
@@ -140,17 +143,37 @@ const ClientDialog = ({ openDialog, setOpenDialog, index, client }) => {
             />
           </Stack>
         </Stack>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={() => handleDialog(false)}>Cancelar</Button>
-        <Button
-          variant="contained"
-          onClick={handleSubmit(onSubmit)}
-          disabled={!disable}
+        <Divider />
+        <Stack
+          flexDirection="row"
+          justifyContent="end"
+          alignItems="center"
+          mt="1rem"
         >
-          Salvar
-        </Button>
-      </DialogActions>
+          <Button
+            onClick={() => handleDialog(false)}
+            sx={{
+              fontWeight: 600,
+              textTransform: "none",
+              color: "#464E5F",
+              mr: "1rem",
+            }}
+          >
+            Cancelar
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleSubmit(onSubmit)}
+            disabled={!disable}
+            sx={{
+              textTransform: "none",
+              fontWeight: 600,
+            }}
+          >
+            Salvar
+          </Button>
+        </Stack>
+      </DialogContent>
     </Dialog>
   );
 };
