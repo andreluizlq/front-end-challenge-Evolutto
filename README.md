@@ -15,7 +15,7 @@ Requirements
 You need to install both Node.js to run this project.
 
 **Clone the project and access the folder**
-$ git clone https://github.com/andreluizlq/front-end-challenge-Evolutto && cd podcastr
+$ git clone https://github.com/andreluizlq/front-end-challenge-Evolutto && cd front-end-challenge-Evolutto
 
 **Follow the steps below**
 ```
