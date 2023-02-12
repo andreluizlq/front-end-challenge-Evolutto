@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/front-end-challenge-Evolutto/static/css/main.8b9345d1.css",
+    "main.js": "/front-end-challenge-Evolutto/static/js/main.7a7bbb3b.js",
+    "index.html": "/front-end-challenge-Evolutto/index.html",
+    "main.8b9345d1.css.map": "/front-end-challenge-Evolutto/static/css/main.8b9345d1.css.map",
+    "main.7a7bbb3b.js.map": "/front-end-challenge-Evolutto/static/js/main.7a7bbb3b.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.8b9345d1.css",
+    "static/js/main.7a7bbb3b.js"
+  ]
+}
