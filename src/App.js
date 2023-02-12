@@ -20,16 +20,14 @@ const StyledTabs = styled((props) => <Tabs {...props} />)({
   },
 });
 
-const StyledTab = styled((props) => <Tab disableRipple {...props} />)(
-  ({ theme }) => ({
-    textTransform: "none",
-    fontSize: "18.67px",
-    marginRight: theme.spacing(1),
-    "&.Mui-selected": {
-      fontWeight: 700,
-    },
-  })
-);
+const StyledTab = styled((props) => <Tab {...props} />)(({ theme }) => ({
+  textTransform: "none",
+  fontSize: "18.67px",
+  marginRight: theme.spacing(1),
+  "&.Mui-selected": {
+    fontWeight: 700,
+  },
+}));
 
 function App() {
   const dispatch = useDispatch();
@@ -67,15 +65,10 @@ function App() {
           variant="scrollable"
           allowScrollButtonsMobile
           onChange={handleChangeTab}
-          textColor="#000000"
+          textColor="inherit"
         >
           {ACCOUNT_TABS.map((tab) => (
-            <StyledTab
-              disableRipple
-              key={tab.value}
-              label={tab.value}
-              value={tab.value}
-            />
+            <StyledTab key={tab.value} label={tab.value} value={tab.value} />
           ))}
         </StyledTabs>
         <Stack
@@ -102,7 +95,7 @@ function App() {
           return isMatched && <Box key={tab.value}>{tab.component}</Box>;
         })}
       </Stack>
-      <ClientDialog openDialog={openDialog} setOpenDialog={setOpenDialog} />
+      <ClientDialog open={openDialog} onClose={setOpenDialog} />
     </Page>
   );
 }

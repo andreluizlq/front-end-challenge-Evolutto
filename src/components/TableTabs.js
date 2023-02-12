@@ -33,7 +33,11 @@ const TableTabs = ({ clientList, active = false }) => {
   const [page, setPage] = useState(1);
   const pageLimit = 6;
   const dispatch = useDispatch();
-  const [openDialog, setOpenDialog] = useState(false);
+  const [userToUpdate, setUserToUpdate] = useState();
+
+  const handleCloseDialog = () => {
+    setUserToUpdate(null);
+  };
 
   return (
     <Stack alignItems="center" spacing={3}>
@@ -54,82 +58,79 @@ const TableTabs = ({ clientList, active = false }) => {
             {clientList
               ?.slice((page - 1) * pageLimit, page * pageLimit)
               .map((item, index) => (
-                <>
-                  <TableRow key={index} hover>
-                    <TableCell sx={{ py: "0.8rem" }}>
-                      <Stack
-                        maxWidth="300px"
-                        flexDirection="row"
-                        alignItems="center"
-                      >
-                        <Box mr="1rem">
-                          <UserImage image={item.type} />
-                        </Box>
-                        <Typography fontWeight={600} color="#464E5F" noWrap>
-                          {item.name}
-                        </Typography>
-                      </Stack>
-                    </TableCell>
-                    <TableCell>
-                      <Stack maxWidth="304px">
-                        <Typography fontWeight={600} color="#464E4F">
-                          {item.email}
-                        </Typography>
-                      </Stack>
-                    </TableCell>
-                    <TableCell>
-                      <Stack
-                        flexDirection="row"
-                        justifyContent="space-between"
-                        maxWidth="263px"
-                      >
-                        {active && (
-                          <>
-                            <Button
-                              startIcon={<EditIcon />}
-                              color="secondary"
-                              sx={{ fontWeight: 600, textTransform: "none" }}
-                              onClick={() => setOpenDialog(true)}
-                            >
-                              Editar
-                            </Button>
-
-                            <Button
-                              startIcon={<DeleteIcon />}
-                              color="error"
-                              sx={{ fontWeight: 600, textTransform: "none" }}
-                              onClick={() =>
-                                dispatch(handleDisabledClient(index))
-                              }
-                            >
-                              Excluir
-                            </Button>
-                          </>
-                        )}
-                        {!active && (
+                <TableRow key={index} hover>
+                  <TableCell sx={{ py: "0.8rem" }}>
+                    <Stack
+                      maxWidth="300px"
+                      flexDirection="row"
+                      alignItems="center"
+                    >
+                      <Box mr="1rem">
+                        <UserImage image={item.type} />
+                      </Box>
+                      <Typography fontWeight={600} color="#464E5F" noWrap>
+                        {item.name}
+                      </Typography>
+                    </Stack>
+                  </TableCell>
+                  <TableCell>
+                    <Stack maxWidth="304px">
+                      <Typography fontWeight={600} color="#464E4F">
+                        {item.email}
+                      </Typography>
+                    </Stack>
+                  </TableCell>
+                  <TableCell>
+                    <Stack
+                      flexDirection="row"
+                      justifyContent="space-between"
+                      maxWidth="263px"
+                    >
+                      {active && (
+                        <>
                           <Button
-                            startIcon={<ReturnIcon />}
-                            color="success"
+                            startIcon={<EditIcon />}
+                            color="secondary"
                             sx={{ fontWeight: 600, textTransform: "none" }}
-                            onClick={() => dispatch(handleEnableClient(index))}
+                            onClick={() => setUserToUpdate(item)}
                           >
-                            Restaurar
+                            Editar
                           </Button>
-                        )}
-                      </Stack>
-                    </TableCell>
-                  </TableRow>
-                  <ClientDialog
-                    openDialog={openDialog}
-                    setOpenDialog={setOpenDialog}
-                    client={item}
-                    index={index}
-                  />
-                </>
+
+                          <Button
+                            startIcon={<DeleteIcon />}
+                            color="error"
+                            sx={{ fontWeight: 600, textTransform: "none" }}
+                            onClick={() =>
+                              dispatch(handleDisabledClient(item.id))
+                            }
+                          >
+                            Excluir
+                          </Button>
+                        </>
+                      )}
+                      {!active && (
+                        <Button
+                          startIcon={<ReturnIcon />}
+                          color="success"
+                          sx={{ fontWeight: 600, textTransform: "none" }}
+                          onClick={() => dispatch(handleEnableClient(item.id))}
+                        >
+                          Restaurar
+                        </Button>
+                      )}
+                    </Stack>
+                  </TableCell>
+                </TableRow>
               ))}
           </TableBody>
         </Table>
       </TableContainer>
+      <ClientDialog
+        open={!!userToUpdate}
+        onClose={handleCloseDialog}
+        client={userToUpdate}
+      />
       <Pagination
         sx={{ mb: "1rem" }}
         count={Math.ceil(clientList.length / pageLimit)}

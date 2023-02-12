@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import {
   Stack,
   Button,
@@ -15,43 +14,38 @@ import {
 } from "../redux/slices/clientDataSlice";
 import { useForm, Controller } from "react-hook-form";
 import { useDispatch } from "react-redux";
+import { useEffect } from "react";
 
-const ClientDialog = ({ openDialog, setOpenDialog, index, client }) => {
+const ClientDialog = ({ open, onClose, client }) => {
   const dispatch = useDispatch();
-  const { control, handleSubmit, watch, reset } = useForm({
+  const uuid = require("uuid");
+  const { control, handleSubmit, reset, formState } = useForm({
     mode: "onChange",
-    reValidateMode: "onChange",
     defaultValues: {
-      name: client?.name || "",
-      email: client?.email || "",
-      type: client?.type || "",
+      name: "",
+      email: "",
+      type: "",
+      id: "",
     },
   });
 
-  const watchAllFields = watch(["name", "email", "type"]);
+  useEffect(() => {
+    reset({
+      name: client?.name || "",
+      email: client?.email || "",
+      type: client?.type || "",
+      id: client?.id || "",
+    });
+  }, [client, reset]);
 
-  const disable = useMemo(() => {
-    const name = watchAllFields[0];
-    const email = watchAllFields[1];
-    const type = watchAllFields[2];
-    const watchBaseFields = { name, email, type };
-    const fields = Object.keys(watchBaseFields);
-    const result = fields.every(
-      (item) =>
-        watchBaseFields[item] !== undefined && watchBaseFields[item].length > 0
-    );
-    return result;
-  }, [watchAllFields]);
-
-  const onSubmit = async (values) => {
-    if (index) {
-      const response = await dispatch(handlePutClient({ index, values }));
+  const onSubmit = (values) => {
+    if (client) {
+      const response = dispatch(handlePutClient(values));
       if (response.payload) {
         handleDialog(false);
       }
     } else {
-      console.log(values);
-      const response = await dispatch(handlePostClient(values));
+      const response = dispatch(handlePostClient({ ...values, id: uuid.v4() }));
       if (response.payload) {
         handleDialog(false);
       }
@@ -59,23 +53,20 @@ const ClientDialog = ({ openDialog, setOpenDialog, index, client }) => {
   };
 
   const handleDialog = (value) => {
-    if (value) {
-      setOpenDialog(value);
-    } else {
-      setOpenDialog(value);
-      reset({
-        name: client?.name || "",
-        email: client?.email || "",
-        type: client?.type || "",
-      });
-    }
+    onClose(value);
+    reset({
+      name: "",
+      email: "",
+      type: "",
+      id: "",
+    });
   };
 
   const database = [{ name: "Masculino" }, { name: "Feminino" }];
 
   return (
     <Dialog
-      open={openDialog}
+      open={open}
       onClose={() => handleDialog(false)}
       maxWidth="xs"
       fullWidth
@@ -89,11 +80,13 @@ const ClientDialog = ({ openDialog, setOpenDialog, index, client }) => {
             <Controller
               name="name"
               control={control}
+              rules={{ required: true }}
               render={({ field, fieldState: { error } }) => (
                 <TextField
                   {...field}
                   fullWidth
                   label="Nome"
+                  required
                   size="small"
                   error={Boolean(error)}
                   helperText={error?.message}
@@ -106,10 +99,12 @@ const ClientDialog = ({ openDialog, setOpenDialog, index, client }) => {
             <Controller
               name="email"
               control={control}
+              rules={{ required: true }}
               render={({ field, fieldState: { error } }) => (
                 <TextField
                   {...field}
                   fullWidth
+                  required
                   label="EmailExemplo@email.com"
                   size="small"
                   error={Boolean(error)}
@@ -123,12 +118,14 @@ const ClientDialog = ({ openDialog, setOpenDialog, index, client }) => {
             <Controller
               name="type"
               control={control}
+              rules={{ required: true }}
               render={({ field, fieldState: { error } }) => (
                 <TextField
                   {...field}
                   select
                   label="Sexo"
                   fullWidth
+                  required
                   size="small"
                   error={Boolean(error)}
                   helperText={error?.message}
@@ -164,7 +161,7 @@ const ClientDialog = ({ openDialog, setOpenDialog, index, client }) => {
           <Button
             variant="contained"
             onClick={handleSubmit(onSubmit)}
-            disabled={!disable}
+            disabled={!formState.isValid}
             sx={{
               textTransform: "none",
               fontWeight: 600,

@@ -6,11 +6,20 @@ const initialState = {
   listActive: [],
 };
 
+const updateList = (list) => {
+  let result = list.sort((x, y) => {
+    let a = x.name.toUpperCase(),
+      b = y.name.toUpperCase();
+    return a === b ? 0 : a > b ? 1 : -1;
+  });
+  return result;
+};
+
 export const fetchClientDataActive = createAsyncThunk(
   "clientData/fetchClientDataActive",
   async () => {
     try {
-      const response = await mockApi("active"); // TODO: requisição a API
+      const response = await mockApi("active");
       return response;
     } catch (err) {
       alert(err);
@@ -22,7 +31,7 @@ export const fetchClientDataDisabled = createAsyncThunk(
   "clientData/fetchClientDataDisabled",
   async () => {
     try {
-      const response = await mockApi("disabled"); // TODO: requisição a API
+      const response = await mockApi("disabled");
       return response;
     } catch (err) {
       alert(err);
@@ -41,27 +50,40 @@ export const clientDataSlice = createSlice({
       state.listDisabled = action.payload;
     },
     handleDisabledClient(state, action) {
-      const [client] = state.listActive.splice(action.payload, 1);
+      const userIndex = state.listActive.findIndex(
+        (user) => user.id === action.payload
+      );
+      const [client] = state.listActive.splice(userIndex, 1);
       state.listDisabled.push(client);
+      state.listDisabled = updateList(state.listDisabled);
     },
     handleEnableClient(state, action) {
-      const [client] = state.listDisabled.splice(action.payload, 1);
+      const userIndex = state.listDisabled.findIndex(
+        (user) => user.id === action.payload
+      );
+      const [client] = state.listDisabled.splice(userIndex, 1);
       state.listActive.push(client);
+      state.listActive = updateList(state.listActive);
     },
     handlePostClient(state, action) {
       state.listActive.push(action.payload);
+      state.listActive = updateList(state.listActive);
     },
     handlePutClient(state, action) {
-      const { index, values } = action.payload;
-      state.listActive[index] = values;
+      const { payload: values } = action;
+      const userIndex = state.listActive.findIndex(
+        (user) => user.id === values.id
+      );
+      state.listActive[userIndex] = values;
+      state.listActive = updateList(state.listActive);
     },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchClientDataActive.fulfilled, (state, action) => {
-      state.listActive = action.payload;
+      state.listActive = updateList(action.payload);
     });
     builder.addCase(fetchClientDataDisabled.fulfilled, (state, action) => {
-      state.listDisabled = action.payload;
+      state.listDisabled = updateList(action.payload);
     });
   },
 });
