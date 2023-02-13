@@ -72,9 +72,10 @@ function App() {
           ))}
         </StyledTabs>
         <Stack
-          flexDirection="row"
-          justifyContent="space-between"
+          flexDirection={{ sm: "row", xs: "column" }}
+          justifyContent={{ sm: "space-between", xs: "center" }}
           alignItems="center"
+          spacing={{ sm: 0, xs: 2 }}
         >
           <Typography color="#B5B5C3" fontWeight={500} lineHeight="1.313rem">
             Mais de {listActive.length + listDisabled.length}+ novos membros

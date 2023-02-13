@@ -15,10 +15,12 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
+import { useSnackbar } from "notistack";
 
 const ClientDialog = ({ open, onClose, client }) => {
   const dispatch = useDispatch();
   const uuid = require("uuid");
+  const { enqueueSnackbar } = useSnackbar();
   const { control, handleSubmit, reset, formState } = useForm({
     mode: "onChange",
     defaultValues: {
@@ -43,11 +45,17 @@ const ClientDialog = ({ open, onClose, client }) => {
       const response = dispatch(handlePutClient(values));
       if (response.payload) {
         handleDialog(false);
+        enqueueSnackbar("Atualizado com sucesso", {
+          variant: "success",
+        });
       }
     } else {
       const response = dispatch(handlePostClient({ ...values, id: uuid.v4() }));
       if (response.payload) {
         handleDialog(false);
+        enqueueSnackbar("Cadastrado com sucesso", {
+          variant: "success",
+        });
       }
     }
   };
@@ -70,7 +78,6 @@ const ClientDialog = ({ open, onClose, client }) => {
       onClose={() => handleDialog(false)}
       maxWidth="xs"
       fullWidth
-      sx={{ borderRadius: "16px" }}
     >
       <DialogTitle sx={{ fontWeight: 600 }}>Editar contato</DialogTitle>
       <DialogContent>

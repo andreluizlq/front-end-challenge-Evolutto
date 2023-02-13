@@ -8,7 +8,7 @@ const Page = ({ children }) => {
         height: "100vh",
       }}
     >
-      <Stack alignItems="start" p="1rem">
+      <Stack alignItems={{ sm: "start", xs: "center" }} p="1rem">
         <LogoImage width={"16rem"} />
       </Stack>
       <Container>

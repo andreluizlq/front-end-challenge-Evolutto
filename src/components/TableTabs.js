@@ -12,6 +12,9 @@ import {
   Button,
   Typography,
   Box,
+  DialogTitle,
+  Dialog,
+  DialogContent,
 } from "@mui/material";
 import { useDispatch } from "react-redux";
 import {
@@ -24,6 +27,7 @@ import EditIcon from "../assets/components/icons/EditIcon";
 import DeleteIcon from "../assets/components/icons/DeleteIcon";
 import ReturnIcon from "../assets/components/icons/ReturnIcon";
 import UserImage from "../assets/components/image/UserImage";
+import { useSnackbar } from "notistack";
 
 const StyledTableCell = styled(TableCell)({
   padding: "12px 20px 12px 20px",
@@ -34,9 +38,30 @@ const TableTabs = ({ clientList, active = false }) => {
   const pageLimit = 6;
   const dispatch = useDispatch();
   const [userToUpdate, setUserToUpdate] = useState();
+  const [userToDelete, setUserToDelete] = useState();
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleCloseDialog = () => {
     setUserToUpdate(null);
+  };
+
+  const handleCloseDialogDelete = () => {
+    setUserToDelete(null);
+  };
+
+  const handleToRestore = (item) => {
+    dispatch(handleEnableClient(item.id));
+    enqueueSnackbar("Restaurado com sucesso", {
+      variant: "success",
+    });
+  };
+
+  const handleToDelete = (item) => {
+    dispatch(handleDisabledClient(item.id));
+    setUserToDelete(null);
+    enqueueSnackbar("Excluido com sucesso", {
+      variant: "success",
+    });
   };
 
   return (
@@ -101,9 +126,7 @@ const TableTabs = ({ clientList, active = false }) => {
                             startIcon={<DeleteIcon />}
                             color="error"
                             sx={{ fontWeight: 600, textTransform: "none" }}
-                            onClick={() =>
-                              dispatch(handleDisabledClient(item.id))
-                            }
+                            onClick={() => setUserToDelete(item)}
                           >
                             Excluir
                           </Button>
@@ -114,7 +137,7 @@ const TableTabs = ({ clientList, active = false }) => {
                           startIcon={<ReturnIcon />}
                           color="success"
                           sx={{ fontWeight: 600, textTransform: "none" }}
-                          onClick={() => dispatch(handleEnableClient(item.id))}
+                          onClick={() => handleToRestore(item)}
                         >
                           Restaurar
                         </Button>
@@ -131,8 +154,47 @@ const TableTabs = ({ clientList, active = false }) => {
         onClose={handleCloseDialog}
         client={userToUpdate}
       />
+      <Dialog
+        open={!!userToDelete}
+        onClose={handleCloseDialogDelete}
+        maxWidth="xs"
+      >
+        <DialogTitle sx={{ fontWeight: 600 }}>
+          Tem certeza que deseja excluir esse contato?
+        </DialogTitle>
+        <DialogContent>
+          <Stack
+            flexDirection="row"
+            justifyContent="end"
+            alignItems="center"
+            mt="1rem"
+          >
+            <Button
+              onClick={() => handleCloseDialogDelete(false)}
+              sx={{
+                fontWeight: 600,
+                textTransform: "none",
+                color: "#464E5F",
+                mr: "1rem",
+              }}
+            >
+              Cancelar
+            </Button>
+            <Button
+              variant="contained"
+              onClick={() => handleToDelete(userToDelete)}
+              sx={{
+                textTransform: "none",
+                fontWeight: 600,
+              }}
+            >
+              Excluir
+            </Button>
+          </Stack>
+        </DialogContent>
+      </Dialog>
       <Pagination
-        sx={{ mb: "1rem" }}
+        sx={{ pb: "1rem" }}
         count={Math.ceil(clientList.length / pageLimit)}
         onChange={(_, value) => setPage(value)}
         page={page}
