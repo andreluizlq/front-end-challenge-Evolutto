@@ -1,5 +1,5 @@
 import { Stack, Box, Container } from "@mui/material";
-
+import LogoImage from "../assets/components/image/logoImage";
 const Page = ({ children }) => {
   return (
     <Stack
@@ -9,7 +9,7 @@ const Page = ({ children }) => {
       }}
     >
       <Stack alignItems="start" p="1rem">
-        <Box component="img" alt="LOGO" src="images/logo.png" width="16rem" />
+        <LogoImage width={"16rem"} />
       </Stack>
       <Container>
         <Box pt="6rem">{children}</Box>
