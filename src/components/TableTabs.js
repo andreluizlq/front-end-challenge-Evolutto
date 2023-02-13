@@ -107,7 +107,7 @@ const TableTabs = ({ clientList, active = false }) => {
                   </TableCell>
                   <TableCell>
                     <Stack
-                      flexDirection="row"
+                      flexDirection={{ sm: "row", xs: "column" }}
                       justifyContent="space-between"
                       maxWidth="263px"
                     >
