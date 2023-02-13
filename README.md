@@ -1,5 +1,6 @@
 # Customer registration 
-Front-end challenge passed by the company Evolutto.
+Front-end challenge passed by the company Evolutto. 
+
 ![alt text](https://github.com/andreluizlq/front-end-challenge-Evolutto/blob/master/public/testeImg.png)
 
 # Tecnologies
